@@ -1,0 +1,36 @@
+-- SQL for MSSQL
+Use [master]
+If Exists(Select * from sys.databases Where name = 'TestTask')
+Drop Database TestTask
+
+Create Database TestTask
+go
+
+Use [TestTask]
+go
+
+Create Table Companies(
+	Id int Identity(1,1) NOT NULL Primary Key,
+	Name varchar(150) NOT NULL,
+	BinarySign bit NOT NULL)
+
+Create Table CompaniesBranches(
+	Id int Identity(1,1) NOT NULL Primary Key,
+	Name varchar(150) NOT NULL,
+	CompanyId int NOT NULL
+Foreign Key (CompanyId) References Companies(Id))
+
+Insert Into Companies(Name, BinarySign) Values('Company1', 0);
+Insert Into Companies(Name, BinarySign) Values('Company2', 0);
+Insert Into Companies(Name, BinarySign) Values('Company3', 1);
+Insert Into Companies(Name, BinarySign) Values('Company4', 1);
+Insert Into Companies(Name, BinarySign) Values('Company5', 1);
+
+Insert Into CompaniesBranches(Name, CompanyId) Values('C1_B1', (SELECT Id FROM Companies WHERE Name = 'Company1'))
+Insert Into CompaniesBranches(Name, CompanyId) Values('C1_B2', (SELECT Id FROM Companies WHERE Name = 'Company1'))
+Insert Into CompaniesBranches(Name, CompanyId) Values('C2_B1', (SELECT Id FROM Companies WHERE Name = 'Company2'))
+Insert Into CompaniesBranches(Name, CompanyId) Values('C3_B1', (SELECT Id FROM Companies WHERE Name = 'Company3'))
+Insert Into CompaniesBranches(Name, CompanyId) Values('C3_B2', (SELECT Id FROM Companies WHERE Name = 'Company3'))
+Insert Into CompaniesBranches(Name, CompanyId) Values('C3_B3', (SELECT Id FROM Companies WHERE Name = 'Company3'))
+Insert Into CompaniesBranches(Name, CompanyId) Values('C3_B4', (SELECT Id FROM Companies WHERE Name = 'Company3'))
+Insert Into CompaniesBranches(Name, CompanyId) Values('C5_B1', (SELECT Id FROM Companies WHERE Name = 'Company5'))

@@ -1,0 +1,43 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="text-center">
+    
+    @if (Model.IsCorrect)
+    {
+        <table>
+            <tr>
+            <th>FilialName</th>
+            <th>CompanyName</th>
+            <th>BinarySign</th>
+            <th>RelatedFilials</th>
+            </tr>
+        @foreach (var raw in Model.Query)
+        {   
+            <tr>
+            <td>
+                <b>@raw.FilialName</b>
+            </td>
+            <td>
+                <b>@raw.CompanyName</b>
+            </td>
+            <td>
+                <b>@raw.BinarySign</b>
+            </td>
+            <td>                
+                <b>@raw.RelatedFilials</b>
+            </td>
+            </tr>
+            @* <p>Name: <b>@Model.Name</b></p>   *@
+        }
+        </table>
+    }
+    else
+    {
+        <p>No valid data</p>
+    }
+
+</div>
