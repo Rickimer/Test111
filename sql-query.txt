@@ -1,17 +1,8 @@
-select CompaniesBranches.Name, CompaniesName, BinarySign, Filials from
-CompaniesBranches join
-(select Companies.Id as CompaniesId, Companies.Name as CompaniesName, Companies.BinarySign, GROUP_CONCAT(CompaniesBranches.Name) as Filials
+select CompaniesBranches.Name as FilialName, CompanyName, BinarySign, Case When BinarySign == true Then allBranch else Filials END as RelatedFilials
+from 
+CompaniesBranches inner join
+(select Companies.Id as CompaniesId, Companies.Name as CompanyName, Companies.BinarySign, GROUP_CONCAT(CompaniesBranches.Name) as Filials
 from 
 Companies join CompaniesBranches on CompaniesBranches.CompanyId == Companies.Id
-where Companies.BinarySign == 0
-GROUP by Companies.Id, Companies.Name, Companies.BinarySign
-union all 
-select Companies.Id, Companies.Name, Companies.BinarySign, t21.rr as r2
-from 
-Companies cross join 
-	(select GROUP_CONCAT(CompaniesBranches.Name) as rr
-	from  
-	CompaniesBranches
-	) as t21 
- where Companies.BinarySign == 1
-) as t1 on CompaniesBranches.CompanyId == t1.CompaniesId
+GROUP by Companies.Id, Companies.Name) cross join 
+	(select GROUP_CONCAT(CompaniesBranches.Name) as allBranch from  CompaniesBranches) as t on CompaniesId == CompaniesBranches.CompanyId	

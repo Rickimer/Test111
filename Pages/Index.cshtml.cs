@@ -22,20 +22,27 @@ namespace Test1.Pages
 
         public void OnGet()
         {            
-            var f = from branch in _dbContext.CompaniesBranches                     
-                     group branch by new { branch.CompanyId, branch.Name } into Branchesgroup                     
-                     select new { Branchesgroup.Key.CompanyId, Filials = String.Join(",", Branchesgroup.Select(x => x.Name))
-                     , BranchName = Branchesgroup.Key.Name
-                     } into setFilials
-                     join company in _dbContext.Companies on setFilials.CompanyId equals company.Id              
-                     from branch in 
-                        (from b in _dbContext.CompaniesBranches                             
-                         group b by new { } into all
-                         select new { Name = String.Join(",", all.Select(x=>x.Name))})
-                     select new Query1{
-                         FilialName = setFilials.BranchName, CompanyName = company.Name, BinarySign = company.BinarySign, 
-                         RelatedFilials = company.BinarySign ? branch.Name : setFilials.Filials
-                     };
+            var f = from branch in _dbContext.CompaniesBranches
+                    group branch by new { branch.CompanyId} into Branchesgroup
+                    select new
+                    {
+                        Branchesgroup.Key.CompanyId,
+                        Filials = String.Join(",", Branchesgroup.Select(x => x.Name))
+                    ,                        
+                    } into setFilials
+                    join company in _dbContext.Companies on setFilials.CompanyId equals company.Id
+                    join branchcompany in _dbContext.CompaniesBranches on setFilials.CompanyId equals branchcompany.CompanyId
+                     from branch in
+                       (from b in _dbContext.CompaniesBranches
+                        group b by new { } into all
+                        select new { Name = String.Join(",", all.Select(x => x.Name)) })
+                    select new Query1
+                    {
+                        FilialName = branchcompany.Name,
+                        CompanyName = company.Name,
+                        BinarySign = company.BinarySign,
+                        RelatedFilials = company.BinarySign ? branch.Name : setFilials.Filials                        
+                    };
             
             Query = f.ToList();
             IsCorrect = true;
